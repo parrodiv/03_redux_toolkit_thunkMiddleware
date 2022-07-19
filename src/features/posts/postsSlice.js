@@ -54,6 +54,35 @@ const postsSlice = createSlice({
       }
     },
   },
+  extraReducers(builder){
+    builder
+      .addCase(fetchPosts.pending, (state) => {
+        state.status = 'loading'
+      })
+      .addCase(fetchPosts.fulfilled, (state, action) => {
+        state.status = 'succeded'
+        // Adding date and reactions because from jsonplaceholder there aren't these 2 fields
+        let min = 1 
+        const loadedPosts = action.payload.map(post => {
+          post.date = sub(new Date(), {minutes: min++}).toISOString() //ogni post sarà 1 minuto dopo l'altro
+          post.reactions = {
+            thumbsUp: 0,
+            hooray: 0,
+            heart: 0,
+            rocket: 0,
+            eyes: 0
+          }
+          return post
+        })       
+
+        // Add any fetched posts to the array
+        state.posts = state.posts.concat(loadedPosts)
+      })
+      .addCase(fetchPosts.rejected, (state, action) => {
+        state.status = 'failed',
+        state.error = action.error.message
+      })
+  }
 })
 
 export const selectAllPosts = (state) => state.posts.posts
