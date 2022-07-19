@@ -1,11 +1,23 @@
-import { useSelector } from 'react-redux'
-import { selectAllPosts } from './postsSlice'
+import { useSelector, useDispatch } from 'react-redux'
+import { useEffect } from 'react'
+import { selectAllPosts, getPostsError, getPostsStatus, fetchPosts } from './postsSlice'
 import PostAuthor from './PostAuthor'
 import TimeAgo from './TimeAgo'
 import ReactionsButtons from './ReactionsButtons'
 
 const PostsList = () => {
+  const dispatch = useDispatch()
+
   const posts = useSelector(selectAllPosts)
+  const postsStatus = useSelector(getPostsStatus)
+  const postsError = useSelector(getPostsError)
+
+  useEffect(() => {
+    if (postsStatus === 'idle'){
+      dispatch(fetchPosts())
+    }
+  }, [postsStatus, dispatch])
+
 
   const orderedPosts = posts.slice().sort((a, b) => b.date.localeCompare(a.date))
   //slice is going to create a copy of the posts array
