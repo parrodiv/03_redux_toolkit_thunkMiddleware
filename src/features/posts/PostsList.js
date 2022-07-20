@@ -1,44 +1,44 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect } from 'react'
-import { selectAllPosts, getPostsError, getPostsStatus, fetchPosts } from './postsSlice'
-import PostAuthor from './PostAuthor'
-import TimeAgo from './TimeAgo'
-import ReactionsButtons from './ReactionsButtons'
+import {
+  selectAllPosts,
+  getPostsError,
+  getPostsStatus,
+  fetchPosts,
+} from './postsSlice'
+import PostsExcerpt from './PostsExcerpt'
 
 const PostsList = () => {
   const dispatch = useDispatch()
 
   const posts = useSelector(selectAllPosts)
   const postsStatus = useSelector(getPostsStatus)
-  const postsError = useSelector(getPostsError)
+  const error = useSelector(getPostsError)
 
   useEffect(() => {
-    if (postsStatus === 'idle'){
+    if (postsStatus === 'idle') {
       dispatch(fetchPosts())
     }
   }, [postsStatus, dispatch])
 
-
-  const orderedPosts = posts.slice().sort((a, b) => b.date.localeCompare(a.date))
-  //slice is going to create a copy of the posts array
-  //localCompare will return -1 or 1 based on if one is greater than the other
-
-  const renderPosts = orderedPosts.map((post) => (
-    <article key={post.id}>
-      <h3>{post.title}</h3>
-      <p>{post.content.substring(0, 100)}</p>
-      <p className='postCredit'>
-        <PostAuthor userId={post.userId} />
-        <TimeAgo timestamp={post.date} /> 
-      </p>
-      <ReactionsButtons post={post} />
-    </article>
-  ))
+  let content
+  if (postsStatus === 'loading') {
+    content = <p>'Loaging...'</p>
+  } else if (postsStatus === 'succeded') {
+    const orderedPosts = posts
+      .slice()
+      .sort((a, b) => b.date.localeCompare(a.date))
+    content = orderedPosts.map((post) => (
+      <PostsExcerpt key={post.id} post={post} />
+    ))
+  } else if ( postsStatus === 'failed') {
+    content = <p>{error}</p>
+  }
 
   return (
     <section>
       <h2>Posts</h2>
-      {renderPosts}
+      {content}
     </section>
   )
 }
