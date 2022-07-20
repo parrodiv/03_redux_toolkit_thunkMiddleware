@@ -55,7 +55,7 @@ const postsSlice = createSlice({
           },
         }
       },
-    },
+    },    
     reactionAdded(state, action) {
       const { postId, reaction } = action.payload
       const existingPost = state.posts.find((post) => post.id === postId)
@@ -80,7 +80,7 @@ const postsSlice = createSlice({
             hooray: 0,
             heart: 0,
             rocket: 0,
-            eyes: 0
+            coffe: 0
           }
           return post
         })       
