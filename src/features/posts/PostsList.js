@@ -23,7 +23,7 @@ const PostsList = () => {
 
   let content
   if (postsStatus === 'loading') {
-    content = <p>'Loaging...'</p>
+    content = <p>'Loading...'</p>
   } else if (postsStatus === 'succeded') {
     const orderedPosts = posts
       .slice()

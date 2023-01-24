@@ -24,7 +24,10 @@ const AddPostForm = () => {
     if (canSave) {
       try {
         setAddRequestStatus('pending')
-        dispatch(addNewPost({title, body: content, userId})).unwrap()
+        dispatch(addNewPost({ title, body: content, userId })).unwrap()
+        // redux toolkit adds an unwrap function to the return promise and then that returns a new promise that
+        // either has the action payload or it throws an error if it's the rejected action so that lets us use this
+        // try catch logic here
 
         setTitle('')
         setContent('')
@@ -35,9 +38,7 @@ const AddPostForm = () => {
         setAddRequestStatus('idle')
       }
 
-      // redux toolkit adds an unwrap function to the return promise and then that returns a new promise that
-      // either has the action payload or it throws an error if it's the rejected action so that lets us use this
-      // try catch logic here
+      
     }
   }
 
